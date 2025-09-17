@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Bosh sahifa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            text-align: center;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        nav a {
+            padding: 15px 25px;
+            display: block;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        nav a.active {
+            border-bottom: 3px solid #4CAF50;
+            color: #4CAF50;
+        }
+        main {
+            padding: 30px;
+            text-align: center;
+        }
+        section {
+            display: none;
+        }
+        section.active {
+            display: block;
+        }
+        h1 {
+            color: #333;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 12px 20px;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        input, textarea, select {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button.submit-btn {
+            padding: 10px 20px;
+            border: none;
+            background: #4CAF50;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button.submit-btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h2>Xush kelibsiz, {{ request.user.username }}!</h2>
+    </header>
+
+    <nav>
+        <a href="#" class="tab-link active" data-tab="kirim">Kirim</a>
+        <a href="#" class="tab-link" data-tab="chiqim">Chiqim</a>
+        <a href="#" class="tab-link" data-tab="profil">Profil</a>
+    </nav>
+
+    <main>
+        <!-- Kirim bo'limi -->
+        <section id="kirim" class="tab-content active">
+            <h1>Kirim qo‘shish</h1>
+                {% csrf_token %}
+                <input type="text" name="title" placeholder="Nomi yoki manbai" required><br>
+                <input type="number" name="amount" placeholder="Summasi" required><br>
+                <select name="payment_type">
+                    <option value="naqt">Naqt</option>
+                    <option value="karta">Karta</option>
+                    <option value="dollar">Dollar</option>
+                </select><br>
+                <button class="submit-btn" type="submit">Qo‘shish</button>
+            </form>
+        </section>
+
+        <!-- Chiqim bo'limi -->
+        <section id="chiqim" class="tab-content">
+            <h1>Chiqim qo‘shish</h1>
+                {% csrf_token %}
+                <input type="text" name="title" placeholder="Nomi yoki manzili" required><br>
+                <input type="number" name="amount" placeholder="Summasi" required><br>
+                <select name="payment_type">
+                    <option value="naqt">Naqt</option>
+                    <option value="karta">Karta</option>
+                    <option value="dollar">Dollar</option>
+                </select><br>
+                <button class="submit-btn" type="submit">Qo‘shish</button>
+            </form>
+        </section>
+
+        <!-- Profil bo'limi -->
+        <section id="profil" class="tab-content">
+            <h1>Profil ma’lumotlari</h1>
+            <p><strong>Email:</strong> {{ request.user.email }}</p>
+            <p><strong>Telefon:</strong> {{ request.user.phone_number }}</p>
+            <p><strong>Username:</strong> {{ request.user.username }}</p>
+
+            <div style="margin-top:20px;">
+                <a href="{% url 'change_profile' %}" class="btn" style="background:#2196F3;">Profilni o'zgartirish</a>
+                <a href="{% url 'logout' %}" class="btn" style="background:#f44336;">Chiqish</a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const tabs = document.querySelectorAll('.tab-link');
+        const sections = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                sections.forEach(sec => sec.classList.remove('active'));
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
