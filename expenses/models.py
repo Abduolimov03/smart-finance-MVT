@@ -1,7 +1,11 @@
-from django.conf import settings
 from django.db import models
+from django.conf import settings
 
-class Income(models.Model):
+
+# Create your models here.
+
+
+class Expense(models.Model):
     PAYMENT_METHODS = [
         ('naqt', 'Naqt'),
         ('karta', 'Karta'),

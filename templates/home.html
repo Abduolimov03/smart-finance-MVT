@@ -51,16 +51,18 @@ button.submit-btn:hover { background-color:#16295c;}
 
 <header>
     <h1>Xush kelibsiz, {{ request.user.username }}!</h1>
-    <div class="total-sum">{{ total|intcomma }} so‘m</div>
-    <p class="subtitle">O‘z moliyaviy holatingizni kuzatib boring</p>
+    <div class="total-sum">{{ balance|intcomma }} so‘m</div>
+    <p class="subtitle">Umumiy balans</p>
     <div class="account-actions">
         <a href="{% url 'change_profile' %}" class="btn-edit">Profilni o'zgartirish</a>
         <a href="{% url 'logout' %}" class="btn-logout">Chiqish</a>
     </div>
 </header>
 
+
 <nav>
-    <a href="#" class="tab-link active" data-tab="kirim">Kirimlar</a>
+    <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Kirimlar</a>
+    <a href="{% url 'expense_home' %}" class="{% if request.resolver_match.url_name == 'expense_home' %}active{% endif %}">Chiqimlar</a>
     <a href="#" class="tab-link" data-tab="profil">Profil</a>
 </nav>
 
@@ -223,3 +225,4 @@ const incomeChart = new Chart(ctx, {
 
 </body>
 </html>
+

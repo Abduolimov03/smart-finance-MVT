@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "accounts",
     "income",
     'django.contrib.humanize',
+    'expenses',
+
 
 ]
 

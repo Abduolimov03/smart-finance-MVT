@@ -1,0 +1,39 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chiqimni tahrirlash</title>
+<style>
+body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f4f6f8; color:#333; margin:0; padding:0;}
+header { background-color:#1e3a8a; color:#fff; padding:20px 30px; box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+header h1 { font-size:24px; margin:0; }
+main { max-width:500px; margin:30px auto; padding:15px;}
+form input, form select { width:100%; padding:10px; margin:10px 0; border-radius:6px; border:1px solid #ccc; font-size:16px;}
+button.submit-btn { background-color:#1e3a8a; color:#fff; font-weight:bold; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; transition:0.3s;}
+button.submit-btn:hover { background-color:#16295c;}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>Chiqimni tahrirlash</h1>
+</header>
+
+<main>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="Chiqim nomi" value="{{ expense.title }}" required>
+        <input type="number" name="amount" placeholder="Summasi" value="{{ expense.amount }}" required>
+        <select name="payment_method">
+            <option value="naqt" {% if expense.payment_method == 'naqt' %}selected{% endif %}>Naqt</option>
+            <option value="karta" {% if expense.payment_method == 'karta' %}selected{% endif %}>Karta</option>
+            <option value="dollar" {% if expense.payment_method == 'dollar' %}selected{% endif %}>Dollar</option>
+        </select>
+        <button type="submit" class="submit-btn">Saqlash</button>
+    </form>
+</main>
+
+</body>
+</html>

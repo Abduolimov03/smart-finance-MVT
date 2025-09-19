@@ -1,6 +1,8 @@
 from django.core.mail import send_mail
 import random
 from django.contrib.auth import authenticate, login
+
+from expenses.models import Expense
 from .forms import SignUpForm, ProfileUpdateForm
 from .models import CustomUser, VIA_EMAIL, VIA_PHONE
 from .utils import generate_code, send_to_mail
@@ -16,9 +18,9 @@ from income.forms import IncomeForm
 from django.db.models.functions import TruncDay, TruncMonth, TruncYear, TruncWeek
 import json
 
-
 @login_required
 def home_view(request):
+    """Kirimlarni boshqarish sahifasi"""
     form = IncomeForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -26,92 +28,93 @@ def home_view(request):
         amount = form.cleaned_data["amount"]
         payment_method = form.cleaned_data["payment_method"]
 
-        income_obj = Income.objects.filter(user=request.user, title=title, payment_method=payment_method).first()
+        income_obj = Income.objects.filter(
+            user=request.user,
+            title=title,
+            payment_method=payment_method
+        ).first()
+
         if income_obj:
-            income_obj.amount = F('amount') + amount
-            income_obj.save()
+            # Mavjud kirimni yangilash
+            Income.objects.filter(id=income_obj.id).update(amount=F("amount") + amount)
         else:
-            Income.objects.create(user=request.user, title=title, payment_method=payment_method, amount=amount)
+            # Yangi kirim qo‘shish
+            Income.objects.create(
+                user=request.user,
+                title=title,
+                payment_method=payment_method,
+                amount=amount
+            )
+
         messages.success(request, "✅ Kirim qo‘shildi!")
         return redirect("home")
 
+    # --- Obyektlar ---
     incomes = Income.objects.filter(user=request.user).order_by("-created_at")
-    total = incomes.aggregate(total_sum=Sum('amount'))['total_sum'] or 0
+    expenses = Expense.objects.filter(user=request.user).order_by("-created_at")
 
+    # --- Balans hisoblash ---
+    total_income = incomes.aggregate(total=Sum("amount"))["total"] or 0
+    total_expense = expenses.aggregate(total=Sum("amount"))["total"] or 0
+    balance = total_income - total_expense
+
+    # --- Statistikalar ---
     today = timezone.now().date()
     start_week = today - timedelta(days=today.weekday())
     start_month = today.replace(day=1)
     start_year = today.replace(month=1, day=1)
 
-    daily_total = incomes.filter(created_at__date=today).aggregate(Sum('amount'))['amount__sum'] or 0
-    weekly_total = incomes.filter(created_at__date__gte=start_week).aggregate(Sum('amount'))['amount__sum'] or 0
-    monthly_total = incomes.filter(created_at__date__gte=start_month).aggregate(Sum('amount'))['amount__sum'] or 0
-    yearly_total = incomes.filter(created_at__date__gte=start_year).aggregate(Sum('amount'))['amount__sum'] or 0
+    daily_income = incomes.filter(created_at__date=today).aggregate(total=Sum("amount"))["total"] or 0
+    daily_expense = expenses.filter(created_at__date=today).aggregate(total=Sum("amount"))["total"] or 0
 
-    # Vaqt oralig‘i
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
-    if start_date and end_date:
-        try:
-            start_date_obj = datetime.strptime(start_date, "%Y-%m-%d").date()
-            end_date_obj = datetime.strptime(end_date, "%Y-%m-%d").date()
-            range_incomes = incomes.filter(
-                created_at__date__gte=start_date_obj,
-                created_at__date__lte=end_date_obj
-            )
-            range_total = range_incomes.aggregate(Sum('amount'))['amount__sum'] or 0
-        except ValueError:
-            range_incomes = None
-            range_total = 0
-    else:
-        range_incomes = None
-        range_total = None
+    weekly_income = incomes.filter(created_at__date__gte=start_week).aggregate(total=Sum("amount"))["total"] or 0
+    weekly_expense = expenses.filter(created_at__date__gte=start_week).aggregate(total=Sum("amount"))["total"] or 0
 
-    # Chart toggle: 'day', 'week', 'month', 'year'
-    period = request.GET.get('period', 'day')  # default kunlik
+    monthly_income = incomes.filter(created_at__date__gte=start_month).aggregate(total=Sum("amount"))["total"] or 0
+    monthly_expense = expenses.filter(created_at__date__gte=start_month).aggregate(total=Sum("amount"))["total"] or 0
 
-    if period == 'week':
-        chart_data = incomes.annotate(period=TruncWeek('created_at')) \
-            .values('period') \
-            .annotate(total=Sum('amount')) \
-            .order_by('period')
-    elif period == 'month':
-        chart_data = incomes.annotate(period=TruncMonth('created_at')) \
-            .values('period') \
-            .annotate(total=Sum('amount')) \
-            .order_by('period')
-    elif period == 'year':
-        chart_data = incomes.annotate(period=TruncYear('created_at')) \
-            .values('period') \
-            .annotate(total=Sum('amount')) \
-            .order_by('period')
-    else:  # day
-        chart_data = incomes.annotate(period=TruncDay('created_at')) \
-            .values('period') \
-            .annotate(total=Sum('amount')) \
-            .order_by('period')
+    yearly_income = incomes.filter(created_at__date__gte=start_year).aggregate(total=Sum("amount"))["total"] or 0
+    yearly_expense = expenses.filter(created_at__date__gte=start_year).aggregate(total=Sum("amount"))["total"] or 0
 
-    chart_labels = [entry['period'].strftime("%d-%m-%Y") for entry in chart_data]
-    chart_values = [float(entry['total']) for entry in chart_data]
+    # --- Grafiklar ---
+    income_chart = (
+        incomes.annotate(period=TruncDay("created_at"))
+        .values("period")
+        .annotate(total=Sum("amount"))
+        .order_by("period")
+    )
+    expense_chart = (
+        expenses.annotate(period=TruncDay("created_at"))
+        .values("period")
+        .annotate(total=Sum("amount"))
+        .order_by("period")
+    )
+
+    chart_labels = [entry["period"].strftime("%d-%m-%Y") for entry in income_chart]
+    chart_income_values = [float(entry["total"]) for entry in income_chart]
+    chart_expense_values = [float(entry["total"]) for entry in expense_chart]
 
     context = {
         "form": form,
         "incomes": incomes,
-        "total": total,
-        "daily_total": daily_total,
-        "weekly_total": weekly_total,
-        "monthly_total": monthly_total,
-        "yearly_total": yearly_total,
-        "range_incomes": range_incomes,
-        "range_total": range_total,
-        "start_date": start_date,
-        "end_date": end_date,
+        "expenses": expenses,
+        "total_income": total_income,
+        "total_expense": total_expense,
+        "balance": balance,
+        "daily_income": daily_income,
+        "daily_expense": daily_expense,
+        "weekly_income": weekly_income,
+        "weekly_expense": weekly_expense,
+        "monthly_income": monthly_income,
+        "monthly_expense": monthly_expense,
+        "yearly_income": yearly_income,
+        "yearly_expense": yearly_expense,
         "chart_labels": json.dumps(chart_labels),
-        "chart_values": json.dumps(chart_values),
-        "period": period,
+        "chart_income_values": json.dumps(chart_income_values),
+        "chart_expense_values": json.dumps(chart_expense_values),
     }
-
     return render(request, "home.html", context)
+
 def signup_view(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
@@ -183,11 +186,11 @@ def login_view(request):
             return redirect("login")
 
         if not user.is_active:
-            messages.error(request, "Avval email yoki telefon raqamingizni tasdiqlang!")
+            messages.error(request, "Avval email yoki telefon raqamingizni tasdiqlan")
             return redirect("verify")
 
         login(request, user)
-        messages.success(request, "Tizimga muvaffaqiyatli kirdingiz!")
+        messages.success(request, "Tizimga muvaffaqiyatli kirdingiz")
         return redirect("home")
 
     return render(request, "login.html")
