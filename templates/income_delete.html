@@ -1,0 +1,7 @@
+<h2>Haqiqatan ham "{{ income.title }}" ni o‘chirmoqchimisiz?</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">🗑 Ha, o‘chirish</button>
+  <a href="{% url 'income_list' %}">⬅️ Yo‘q, ortga</a>
+</form>

@@ -1,0 +1,8 @@
+<h2>Kirimni tahrirlash</h2>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">💾 Saqlash</button>
+</form>
+<a href="{% url 'income_list' %}">⬅️ Ortga</a>

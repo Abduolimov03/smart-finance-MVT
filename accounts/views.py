@@ -1,8 +1,3 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from django.conf import settings
-from django.contrib import messages
 from django.core.mail import send_mail
 import random
 from django.contrib.auth import authenticate, login
@@ -10,7 +5,99 @@ from .forms import SignUpForm, ProfileUpdateForm
 from .models import CustomUser, VIA_EMAIL, VIA_PHONE
 from .utils import generate_code, send_to_mail
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from income.forms import IncomeForm
+from income.models import Income
+from django.db.models import F
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models import Sum
 
+
+@login_required
+def home_view(request):
+    form = IncomeForm(request.POST or None)
+
+    # Yangi kirim qo‘shish
+    if request.method == "POST" and form.is_valid():
+        title = form.cleaned_data["title"]
+        amount = form.cleaned_data["amount"]
+        payment_method = form.cleaned_data["payment_method"]
+
+        # Agar shunday kirim bo‘lsa, summani qo‘shish, aks holda yangi yozuv
+        income_obj, created = Income.objects.filter(
+            user=request.user,
+            title=title,
+            payment_method=payment_method
+        ).first(), False
+
+        if income_obj:
+            income_obj.amount = F('amount') + amount
+            income_obj.save()
+        else:
+            Income.objects.create(
+                user=request.user,
+                title=title,
+                payment_method=payment_method,
+                amount=amount
+            )
+
+        messages.success(request, "✅ Kirim qo‘shildi!")
+        return redirect("home")
+
+    # Foydalanuvchining barcha kirimlari
+    incomes = Income.objects.filter(user=request.user).order_by("-created_at")
+
+    # Umumiy summa
+    total = incomes.aggregate(total_sum=Sum('amount'))['total_sum'] or 0
+
+    # Kunlik, haftalik, oylik, yillik statistikalar
+    today = timezone.now().date()
+    start_week = today - timedelta(days=today.weekday())  # Dushanbadan
+    start_month = today.replace(day=1)
+    start_year = today.replace(month=1, day=1)
+
+    daily_total = incomes.filter(created_at__date=today).aggregate(Sum('amount'))['amount__sum'] or 0
+    weekly_total = incomes.filter(created_at__date__gte=start_week).aggregate(Sum('amount'))['amount__sum'] or 0
+    monthly_total = incomes.filter(created_at__date__gte=start_month).aggregate(Sum('amount'))['amount__sum'] or 0
+    yearly_total = incomes.filter(created_at__date__gte=start_year).aggregate(Sum('amount'))['amount__sum'] or 0
+
+    # Istalgan vaqt oralig‘i filtr
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    if start_date and end_date:
+        try:
+            start_date_obj = datetime.strptime(start_date, "%Y-%m-%d").date()
+            end_date_obj = datetime.strptime(end_date, "%Y-%m-%d").date()
+            range_incomes = incomes.filter(
+                created_at__date__gte=start_date_obj,
+                created_at__date__lte=end_date_obj
+            ).order_by('-created_at')
+            range_total = range_incomes.aggregate(Sum('amount'))['amount__sum'] or 0
+        except ValueError:
+            range_incomes = []
+            range_total = 0
+    else:
+        range_incomes = None
+        range_total = None
+
+    context = {
+        "form": form,
+        "incomes": incomes,
+        "total": total,
+        "daily_total": daily_total,
+        "weekly_total": weekly_total,
+        "monthly_total": monthly_total,
+        "yearly_total": yearly_total,
+        "range_incomes": range_incomes,
+        "range_total": range_total,
+        "start_date": start_date,
+        "end_date": end_date,
+    }
+
+    return render(request, "home.html", context)
 
 def signup_view(request):
     if request.method == "POST":
@@ -93,8 +180,6 @@ def login_view(request):
     return render(request, "login.html")
 
 
-def home_view(request):
-    return render(request, "home.html")
 
 
 def forgot_password_view(request):
