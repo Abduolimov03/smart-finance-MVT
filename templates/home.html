@@ -39,6 +39,10 @@ button.submit-btn:hover { background-color:#16295c;}
 .date-filter { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; align-items:center;}
 .date-filter label { font-weight:bold;}
 .date-filter input { flex:1 1 150px;}
+.toggle-buttons { margin-bottom:15px; }
+.toggle-buttons a { padding:6px 12px; border-radius:6px; color:#fff; text-decoration:none; font-weight:bold; margin-right:5px; transition:0.3s;}
+.toggle-buttons a:hover { opacity:0.85; }
+.btn-day { background:#3b82f6; } .btn-week { background:#2563eb; } .btn-month { background:#10b981; } .btn-year { background:#f59e0b; }
 @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
 @media(max-width:600px) { nav { flex-direction:column; } nav a { border-bottom:none; padding:12px; } .income-list li { flex-direction:column; align-items:flex-start; } .actions { margin-top:10px; } .stats { flex-direction:column; } .date-filter { flex-direction:column; align-items:flex-start; } }
 </style>
@@ -81,7 +85,7 @@ button.submit-btn:hover { background-color:#16295c;}
             {% endif %}
         </div>
 
-        <!-- Statistika cardlari -->
+        <!-- Statistikalar cardlari -->
         <div class="stats">
             <div class="stat-card">
                 <h3>Bugungi kirim</h3>
@@ -99,6 +103,21 @@ button.submit-btn:hover { background-color:#16295c;}
                 <h3>Yillik kirim</h3>
                 <p>{{ yearly_total|intcomma }} so‘m</p>
             </div>
+        </div>
+
+        <!-- Grafik -->
+        <div class="card">
+            <h2>Kirimlar grafigi</h2>
+
+            <!-- Toggle tugmalar -->
+            <div class="toggle-buttons">
+                <a href="?period=day{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" class="btn-day">Kunlik</a>
+                <a href="?period=week{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" class="btn-week">Haftalik</a>
+                <a href="?period=month{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" class="btn-month">Oylik</a>
+                <a href="?period=year{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" class="btn-year">Yillik</a>
+            </div>
+
+            <canvas id="incomeChart" height="150"></canvas>
         </div>
 
         <!-- Kirim qo‘shish formasi -->
@@ -155,17 +174,50 @@ button.submit-btn:hover { background-color:#16295c;}
     </section>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+// Tab toggle
 const tabs = document.querySelectorAll('.tab-link');
 const sections = document.querySelectorAll('.tab-content');
 tabs.forEach(tab => {
-    tab.addEventListener('click', (e) => {
+    tab.addEventListener('click', e => {
         e.preventDefault();
         tabs.forEach(t => t.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active'));
         tab.classList.add('active');
-        sections.forEach(sec => sec.classList.remove('active'));
         document.getElementById(tab.dataset.tab).classList.add('active');
     });
+});
+
+// Chart
+const ctx = document.getElementById('incomeChart').getContext('2d');
+let chartLabel = "{% if period == 'week' %}Haftalik kirim{% elif period == 'month' %}Oylik kirim{% elif period == 'year' %}Yillik kirim{% else %}Kunlik kirim{% endif %}";
+
+const incomeChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ chart_labels|safe }},
+        datasets: [{
+            label: chartLabel,
+            data: {{ chart_values|safe }},
+            backgroundColor: 'rgba(59, 130, 246, 0.2)',
+            borderColor: 'rgba(59, 130, 246, 1)',
+            borderWidth: 2,
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: true },
+            tooltip: { mode: 'index', intersect: false }
+        },
+        scales: {
+            x: { display: true, title: { display: true, text: 'Sana' } },
+            y: { display: true, title: { display: true, text: 'Summa (so‘m)' } }
+        }
+    }
 });
 </script>
 
