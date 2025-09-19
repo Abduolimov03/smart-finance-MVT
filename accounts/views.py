@@ -17,7 +17,7 @@ from income.forms import IncomeForm
 from django.db.models.functions import TruncDay, TruncMonth, TruncYear, TruncWeek
 import json
 
-login_required
+@login_required
 def home_view(request):
 
     form = IncomeForm(request.POST or None)
