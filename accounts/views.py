@@ -1,7 +1,6 @@
 from django.core.mail import send_mail
 import random
 from django.contrib.auth import authenticate, login
-
 from expenses.models import Expense
 from .forms import SignUpForm, ProfileUpdateForm
 from .models import CustomUser, VIA_EMAIL, VIA_PHONE
@@ -18,11 +17,10 @@ from income.forms import IncomeForm
 from django.db.models.functions import TruncDay, TruncMonth, TruncYear, TruncWeek
 import json
 
-@login_required
+login_required
 def home_view(request):
-    """Kirimlarni boshqarish sahifasi"""
-    form = IncomeForm(request.POST or None)
 
+    form = IncomeForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         title = form.cleaned_data["title"]
         amount = form.cleaned_data["amount"]
@@ -35,85 +33,70 @@ def home_view(request):
         ).first()
 
         if income_obj:
-            # Mavjud kirimni yangilash
-            Income.objects.filter(id=income_obj.id).update(amount=F("amount") + amount)
+            income_obj.amount = F("amount") + amount
+            income_obj.save()
         else:
-            # Yangi kirim qo‘shish
             Income.objects.create(
                 user=request.user,
                 title=title,
                 payment_method=payment_method,
-                amount=amount
+                amount=amount,
             )
 
-        messages.success(request, "✅ Kirim qo‘shildi!")
+        messages.success(request, "Kirim qo‘shildi!")
         return redirect("home")
 
-    # --- Obyektlar ---
     incomes = Income.objects.filter(user=request.user).order_by("-created_at")
     expenses = Expense.objects.filter(user=request.user).order_by("-created_at")
 
-    # --- Balans hisoblash ---
     total_income = incomes.aggregate(total=Sum("amount"))["total"] or 0
     total_expense = expenses.aggregate(total=Sum("amount"))["total"] or 0
     balance = total_income - total_expense
 
-    # --- Statistikalar ---
     today = timezone.now().date()
     start_week = today - timedelta(days=today.weekday())
     start_month = today.replace(day=1)
     start_year = today.replace(month=1, day=1)
 
     daily_income = incomes.filter(created_at__date=today).aggregate(total=Sum("amount"))["total"] or 0
-    daily_expense = expenses.filter(created_at__date=today).aggregate(total=Sum("amount"))["total"] or 0
-
     weekly_income = incomes.filter(created_at__date__gte=start_week).aggregate(total=Sum("amount"))["total"] or 0
-    weekly_expense = expenses.filter(created_at__date__gte=start_week).aggregate(total=Sum("amount"))["total"] or 0
-
     monthly_income = incomes.filter(created_at__date__gte=start_month).aggregate(total=Sum("amount"))["total"] or 0
-    monthly_expense = expenses.filter(created_at__date__gte=start_month).aggregate(total=Sum("amount"))["total"] or 0
-
     yearly_income = incomes.filter(created_at__date__gte=start_year).aggregate(total=Sum("amount"))["total"] or 0
-    yearly_expense = expenses.filter(created_at__date__gte=start_year).aggregate(total=Sum("amount"))["total"] or 0
 
-    # --- Grafiklar ---
-    income_chart = (
-        incomes.annotate(period=TruncDay("created_at"))
-        .values("period")
-        .annotate(total=Sum("amount"))
-        .order_by("period")
-    )
-    expense_chart = (
-        expenses.annotate(period=TruncDay("created_at"))
-        .values("period")
-        .annotate(total=Sum("amount"))
-        .order_by("period")
-    )
+    period = request.GET.get("period", "day")
+    if period == "week":
+        trunc_func = TruncWeek
+    elif period == "month":
+        trunc_func = TruncMonth
+    elif period == "year":
+        trunc_func = TruncYear
+    else:
+        trunc_func = TruncDay
+
+    income_chart = incomes.annotate(period=trunc_func("created_at")) \
+                          .values("period") \
+                          .annotate(total=Sum("amount")) \
+                          .order_by("period")
 
     chart_labels = [entry["period"].strftime("%d-%m-%Y") for entry in income_chart]
-    chart_income_values = [float(entry["total"]) for entry in income_chart]
-    chart_expense_values = [float(entry["total"]) for entry in expense_chart]
+    chart_values = [float(entry["total"]) for entry in income_chart]
 
     context = {
         "form": form,
         "incomes": incomes,
-        "expenses": expenses,
-        "total_income": total_income,
-        "total_expense": total_expense,
         "balance": balance,
-        "daily_income": daily_income,
-        "daily_expense": daily_expense,
-        "weekly_income": weekly_income,
-        "weekly_expense": weekly_expense,
-        "monthly_income": monthly_income,
-        "monthly_expense": monthly_expense,
-        "yearly_income": yearly_income,
-        "yearly_expense": yearly_expense,
+        "daily_total": daily_income,
+        "weekly_total": weekly_income,
+        "monthly_total": monthly_income,
+        "yearly_total": yearly_income,
         "chart_labels": json.dumps(chart_labels),
-        "chart_income_values": json.dumps(chart_income_values),
-        "chart_expense_values": json.dumps(chart_expense_values),
+        "chart_values": json.dumps(chart_values),
+        "period": period,
     }
+
     return render(request, "home.html", context)
+
+
 
 def signup_view(request):
     if request.method == "POST":

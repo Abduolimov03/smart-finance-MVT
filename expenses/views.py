@@ -15,7 +15,6 @@ from .models import Expense
 def expense_home(request):
     form = ExpenseForm(request.POST or None)
 
-    # Balansni hisoblash
     total_income = Income.objects.filter(user=request.user).aggregate(total=Sum("amount"))["total"] or 0
     total_expenses = Expense.objects.filter(user=request.user).aggregate(total=Sum("amount"))["total"] or 0
     balance = total_income - total_expenses
@@ -26,12 +25,10 @@ def expense_home(request):
             amount = form.cleaned_data["amount"]
             payment_method = form.cleaned_data["payment_method"]
 
-            # Mablag yetarliligi tekshiruvi
             if amount > balance:
-                messages.error(request, f"❌ Hisobingizda mablag‘ yetarli emas! (Balans: {balance:,} so‘m)")
+                messages.error(request, f"Hisobingizda mablag‘ yetarli emas! (Balans: {balance:,} so‘m)")
                 return redirect("expense_home")
 
-            # Title + payment_method bo'yicha tekshiradi
             expense_obj, created = Expense.objects.get_or_create(
                 user=request.user,
                 title=title,
@@ -39,17 +36,15 @@ def expense_home(request):
                 defaults={"amount": amount}
             )
             if not created:
-                # Agar mavjud bo‘lsa, summasini qo‘shamiz
                 expense_obj.amount = F("amount") + amount
                 expense_obj.save(update_fields=["amount"])
                 expense_obj.refresh_from_db()
 
-            messages.success(request, "✅ Chiqim qo‘shildi!")
+            messages.success(request, "Chiqim qo‘shildi!")
             return redirect("expense_home")
         else:
-            messages.error(request, "❌ Iltimos, barcha maydonlarni to‘ldiring!")
+            messages.error(request, " Iltimos, barcha maydonlarni to‘ldiring!")
 
-    # Chiqimlar ro'yxati va statistikalar
     expenses = Expense.objects.filter(user=request.user).order_by("-created_at")
     today = timezone.now().date()
     start_week = today - timedelta(days=today.weekday())
@@ -61,7 +56,6 @@ def expense_home(request):
     monthly_total = expenses.filter(created_at__date__gte=start_month).aggregate(total=Sum("amount"))["total"] or 0
     yearly_total = expenses.filter(created_at__date__gte=start_year).aggregate(total=Sum("amount"))["total"] or 0
 
-    # Sana oralig'i bo'yicha filtr
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
     range_expenses, range_total = None, None
@@ -77,13 +71,16 @@ def expense_home(request):
         except ValueError:
             messages.error(request, "Sana formati noto‘g‘ri!")
 
-    # Grafik ma'lumotlar
     chart_data = expenses.annotate(day=TruncDay("created_at"))\
                          .values("day")\
                          .annotate(total=Sum("amount"))\
                          .order_by("day")
+
     chart_labels = [entry["day"].strftime("%d-%m-%Y") for entry in chart_data]
     chart_values = [float(entry["total"]) for entry in chart_data]
+
+    chart_labels_json = json.dumps(chart_labels)
+    chart_values_json = json.dumps(chart_values)
 
     context = {
         "form": form,
@@ -99,11 +96,12 @@ def expense_home(request):
         "range_total": range_total,
         "start_date": start_date,
         "end_date": end_date,
-        "chart_labels": chart_labels,
-        "chart_values": chart_values,
+        "chart_labels": chart_labels_json,
+        "chart_values": chart_values_json,
     }
 
     return render(request, "home_content.html", context)
+
 
 @login_required
 def expense_add(request):

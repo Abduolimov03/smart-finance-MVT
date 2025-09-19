@@ -41,6 +41,12 @@ button.submit-btn:hover { background-color:#16295c;}
 .toggle-buttons a { padding:6px 12px; border-radius:6px; color:#fff; text-decoration:none; font-weight:bold; margin-right:5px; transition:0.3s;}
 .toggle-buttons a:hover { opacity:0.85; }
 .btn-day { background:#3b82f6; } .btn-week { background:#2563eb; } .btn-month { background:#10b981; } .btn-year { background:#f59e0b; }
+.message { padding:10px; margin-bottom:15px; border-radius:6px; }
+.message.error { background:#fef2f2; color:#b91c1c; }
+.message.success { background:#ecfdf5; color:#059669; }
+.tab-content { display:none; animation:fadeIn 0.4s ease-in-out;}
+.tab-content.active { display:block; }
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
 @media(max-width:600px) { nav { flex-direction:column; } nav a { border-bottom:none; padding:12px; } .expense-list li { flex-direction:column; align-items:flex-start; } .actions { margin-top:10px; } .stats { flex-direction:column; } .date-filter { flex-direction:column; align-items:flex-start; } }
 </style>
 </head>
@@ -63,105 +69,135 @@ button.submit-btn:hover { background-color:#16295c;}
 </nav>
 
 <main>
-    <!-- Filtr -->
-    <div class="card">
-        <h2>Vaqt oralig‘i bo‘yicha chiqimlarni ko‘rish</h2>
-        <form method="get" action="{% url 'expense_home' %}">
-            <div class="date-filter">
-                <label for="start_date">Boshlanish sanasi:</label>
-                <input type="date" id="start_date" name="start_date" value="{{ start_date|default:'' }}">
-                <label for="end_date">Tugash sanasi:</label>
-                <input type="date" id="end_date" name="end_date" value="{{ end_date|default:'' }}">
-                <button type="submit" class="submit-btn">Filtr</button>
+    <!-- Chiqimlar tab -->
+    <section id="chiqim" class="tab-content active">
+        <!-- Filtr -->
+        <div class="card">
+            <h2>Vaqt oralig‘i bo‘yicha chiqimlarni ko‘rish</h2>
+            <form method="get" action="{% url 'expense_home' %}">
+                <div class="date-filter">
+                    <label for="start_date">Boshlanish sanasi:</label>
+                    <input type="date" id="start_date" name="start_date" value="{{ start_date|default:'' }}">
+                    <label for="end_date">Tugash sanasi:</label>
+                    <input type="date" id="end_date" name="end_date" value="{{ end_date|default:'' }}">
+                    <button type="submit" class="submit-btn">Filtr</button>
+                </div>
+            </form>
+            {% if range_total %}
+            <p><strong>Tanlangan davr chiqimi:</strong> {{ range_total|intcomma }} so‘m</p>
+            {% endif %}
+        </div>
+
+        <!-- Statistikalar -->
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Bugungi chiqim</h3>
+                <p>{{ daily_total|intcomma }} so‘m</p>
             </div>
-        </form>
-        {% if range_total %}
-        <p><strong>Tanlangan davr chiqimi:</strong> {{ range_total|intcomma }} so‘m</p>
+            <div class="stat-card">
+                <h3>Haftalik chiqim</h3>
+                <p>{{ weekly_total|intcomma }} so‘m</p>
+            </div>
+            <div class="stat-card">
+                <h3>Oylik chiqim</h3>
+                <p>{{ monthly_total|intcomma }} so‘m</p>
+            </div>
+            <div class="stat-card">
+                <h3>Yillik chiqim</h3>
+                <p>{{ yearly_total|intcomma }} so‘m</p>
+            </div>
+        </div>
+
+        <!-- Grafik -->
+        <div class="card">
+            <h2>Chiqimlar grafigi</h2>
+            <div class="toggle-buttons">
+                <a href="?period=day" class="btn-day">Kunlik</a>
+                <a href="?period=week" class="btn-week">Haftalik</a>
+                <a href="?period=month" class="btn-month">Oylik</a>
+                <a href="?period=year" class="btn-year">Yillik</a>
+            </div>
+            <canvas id="expenseChart" height="150"></canvas>
+        </div>
+
+        <!-- Yangi chiqim qo‘shish -->
+        <div class="card">
+            <h2>Yangi chiqim qo‘shish</h2>
+            <form method="post" action="{% url 'expense_add' %}">
+                {% csrf_token %}
+                <input type="text" name="title" placeholder="Chiqim nomi" required>
+                <input type="number" name="amount" placeholder="Summasi" required>
+                <select name="payment_method">
+                    <option value="naqt">Naqt</option>
+                    <option value="karta">Karta</option>
+                    <option value="dollar">Dollar</option>
+                </select>
+                <button type="submit" class="submit-btn">Qo‘shish</button>
+            </form>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
         {% endif %}
-    </div>
 
-    <!-- Statistikalar -->
-    <div class="stats">
-        <div class="stat-card">
-            <h3>Bugungi chiqim</h3>
-            <p>{{ daily_total|intcomma }} so‘m</p>
+        <!-- Chiqimlar ro‘yxati -->
+        <div class="card">
+            <h2>Chiqimlar ro‘yxati</h2>
+            <ul class="expense-list">
+                {% for expense in expenses %}
+                <li>
+                    <div class="info">
+                        <span class="title">{{ expense.title }}</span> –
+                        <span class="amount">{{ expense.amount|intcomma }} so‘m</span>
+                        <span class="date">({{ expense.created_at|date:"d-m-Y H:i" }})</span>
+                    </div>
+                    <div class="actions">
+                        <a href="{% url 'expense_update' expense.id %}" class="btn-edit">✏️ Tahrirlash</a>
+                        <a href="{% url 'expense_delete' expense.id %}" class="btn-delete">🗑 O‘chirish</a>
+                    </div>
+                </li>
+                {% empty %}
+                <li>Hozircha chiqimlar yo‘q</li>
+                {% endfor %}
+            </ul>
         </div>
-        <div class="stat-card">
-            <h3>Haftalik chiqim</h3>
-            <p>{{ weekly_total|intcomma }} so‘m</p>
-        </div>
-        <div class="stat-card">
-            <h3>Oylik chiqim</h3>
-            <p>{{ monthly_total|intcomma }} so‘m</p>
-        </div>
-        <div class="stat-card">
-            <h3>Yillik chiqim</h3>
-            <p>{{ yearly_total|intcomma }} so‘m</p>
-        </div>
-    </div>
+    </section>
 
-    <!-- Grafik -->
-    <div class="card">
-        <h2>Chiqimlar grafigi</h2>
-        <div class="toggle-buttons">
-            <a href="?period=day" class="btn-day">Kunlik</a>
-            <a href="?period=week" class="btn-week">Haftalik</a>
-            <a href="?period=month" class="btn-month">Oylik</a>
-            <a href="?period=year" class="btn-year">Yillik</a>
+    <!-- Profil tab -->
+    <section id="profil" class="tab-content">
+        <div class="card">
+            <h2>Profil ma’lumotlari</h2>
+            <p><strong>Username:</strong> {{ request.user.username }}</p>
+            <p><strong>Email:</strong> {{ request.user.email }}</p>
+            <p><strong>Telefon:</strong> {{ request.user.phone_number }}</p>
+            <div class="account-actions">
+                <a href="{% url 'change_profile' %}" class="btn-edit">Profilni o'zgartirish</a>
+                <a href="{% url 'logout' %}" class="btn-logout">Chiqish</a>
+            </div>
         </div>
-        <canvas id="expenseChart" height="150"></canvas>
-    </div>
+    </section>
 
-    <!-- Yangi chiqim qo‘shish -->
-    <div class="card">
-        <h2>Yangi chiqim qo‘shish</h2>
-        <form method="post" action="{% url 'expense_add' %}">
-            {% csrf_token %}
-            <input type="text" name="title" placeholder="Chiqim nomi" required>
-            <input type="number" name="amount" placeholder="Summasi" required>
-            <select name="payment_method">
-                <option value="naqt">Naqt</option>
-                <option value="karta">Karta</option>
-                <option value="dollar">Dollar</option>
-            </select>
-            <button type="submit" class="submit-btn">Qo‘shish</button>
-        </form>
-    </div>
-
-    {% if messages %}
-    {% for message in messages %}
-        <div class="message {{ message.tags }}">{{ message }}</div>
-    {% endfor %}
-{% endif %}
-
-    <!-- Chiqimlar ro‘yxati -->
-    <div class="card">
-        <h2>Chiqimlar ro‘yxati</h2>
-        <ul class="expense-list">
-            {% for expense in expenses %}
-            <li>
-                <div class="info">
-                    <span class="title">{{ expense.title }}</span> –
-                    <span class="amount">{{ expense.amount|intcomma }} so‘m</span>
-                    <span class="date">({{ expense.created_at|date:"d-m-Y H:i" }})</span>
-                </div>
-                <div class="actions">
-                    <a href="{% url 'expense_update' expense.id %}" class="btn-edit">✏️ Tahrirlash</a>
-                    <a href="{% url 'expense_delete' expense.id %}" class="btn-delete">🗑 O‘chirish</a>
-                </div>
-            </li>
-            {% empty %}
-            <li>Hozircha chiqimlar yo‘q</li>
-            {% endfor %}
-        </ul>
-    </div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+// Tab toggle
+document.querySelectorAll('.tab-link').forEach(tab => {
+    tab.addEventListener('click', e => {
+        e.preventDefault();
+        const target = tab.dataset.tab;
+        document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
+        document.getElementById(target).classList.add('active');
+        document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+    });
+});
+
+// Chart.js
 const ctx = document.getElementById('expenseChart').getContext('2d');
 let chartLabel = "{% if period == 'week' %}Haftalik chiqim{% elif period == 'month' %}Oylik chiqim{% elif period == 'year' %}Yillik chiqim{% else %}Kunlik chiqim{% endif %}";
-
 const expenseChart = new Chart(ctx, {
     type: 'line',
     data: {

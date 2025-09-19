@@ -59,7 +59,6 @@ button.submit-btn:hover { background-color:#16295c;}
     </div>
 </header>
 
-
 <nav>
     <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Kirimlar</a>
     <a href="{% url 'expense_home' %}" class="{% if request.resolver_match.url_name == 'expense_home' %}active{% endif %}">Chiqimlar</a>
@@ -67,10 +66,7 @@ button.submit-btn:hover { background-color:#16295c;}
 </nav>
 
 <main>
-    <!-- Kirimlar bo‘limi -->
     <section id="kirim" class="tab-content active">
-
-        <!-- Filtr: istalgan vaqt oralig'i -->
         <div class="card">
             <h2>Vaqt oralig‘i bo‘yicha filtr</h2>
             <form method="get" action="{% url 'home' %}">
@@ -87,7 +83,6 @@ button.submit-btn:hover { background-color:#16295c;}
             {% endif %}
         </div>
 
-        <!-- Statistikalar cardlari -->
         <div class="stats">
             <div class="stat-card">
                 <h3>Bugungi kirim</h3>
@@ -107,22 +102,17 @@ button.submit-btn:hover { background-color:#16295c;}
             </div>
         </div>
 
-        <!-- Grafik -->
         <div class="card">
             <h2>Kirimlar grafigi</h2>
-
-            <!-- Toggle tugmalar -->
             <div class="toggle-buttons">
                 <a href="?period=day{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" class="btn-day">Kunlik</a>
                 <a href="?period=week{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" class="btn-week">Haftalik</a>
                 <a href="?period=month{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" class="btn-month">Oylik</a>
                 <a href="?period=year{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" class="btn-year">Yillik</a>
             </div>
-
             <canvas id="incomeChart" height="150"></canvas>
         </div>
 
-        <!-- Kirim qo‘shish formasi -->
         <div class="card">
             <h2>Yangi kirim qo‘shish</h2>
             <form method="post" action="{% url 'income_add' %}">
@@ -138,7 +128,6 @@ button.submit-btn:hover { background-color:#16295c;}
             </form>
         </div>
 
-        <!-- Kirimlar ro‘yxati -->
         <div class="card">
             <h2>Kirimlar ro‘yxati</h2>
             <ul class="income-list">
@@ -161,7 +150,6 @@ button.submit-btn:hover { background-color:#16295c;}
         </div>
     </section>
 
-    <!-- Profil bo‘limi -->
     <section id="profil" class="tab-content">
         <div class="card">
             <h2>Profil ma’lumotlari</h2>
@@ -179,22 +167,20 @@ button.submit-btn:hover { background-color:#16295c;}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // Tab toggle
-const tabs = document.querySelectorAll('.tab-link');
-const sections = document.querySelectorAll('.tab-content');
-tabs.forEach(tab => {
+document.querySelectorAll('.tab-link').forEach(tab => {
     tab.addEventListener('click', e => {
         e.preventDefault();
-        tabs.forEach(t => t.classList.remove('active'));
-        sections.forEach(s => s.classList.remove('active'));
+        const target = tab.dataset.tab;
+        document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
+        document.getElementById(target).classList.add('active');
+        document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
-        document.getElementById(tab.dataset.tab).classList.add('active');
     });
 });
 
-// Chart
+// Chart.js
 const ctx = document.getElementById('incomeChart').getContext('2d');
-let chartLabel = "{% if period == 'week' %}Haftalik kirim{% elif period == 'month' %}Oylik kirim{% elif period == 'year' %}Yillik kirim{% else %}Kunlik kirim{% endif %}";
-
+const chartLabel = "{% if period == 'week' %}Haftalik kirim{% elif period == 'month' %}Oylik kirim{% elif period == 'year' %}Yillik kirim{% else %}Kunlik kirim{% endif %}";
 const incomeChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -225,4 +211,3 @@ const incomeChart = new Chart(ctx, {
 
 </body>
 </html>
-
