@@ -3,7 +3,7 @@ from .views import signup_view, verify_view, login_view, home_view, forgot_passw
     logout_view, change_profile
 
 urlpatterns = [
-    path("signup/", signup_view, name="signup"),
+    path("", signup_view, name="signup"),
     path("verify/", verify_view, name="verify"),
     path("login/", login_view, name="login"),
     path("home/", home_view, name="home"),
