@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kirim-chiqim-mvt 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-21 12:59+0500\n"
+"POT-Creation-Date: 2025-09-27 19:04+0500\n"
 "PO-Revision-Date: 2025-09-21 12:50+0500\n"
 "Last-Translator: Asadbek <your_email@example.com>\n"
 "Language-Team: English <en@li.org>\n"
@@ -13,12 +13,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: expenses/forms.py:10 expenses/forms.py:15 income/forms.py:10
-#: income/forms.py:15
+#: income/forms.py:16
 msgid "Nomi yoki manbai"
 msgstr "Title or Source"
 
 #: expenses/forms.py:11 expenses/forms.py:16 expenses/models.py:25
-#: income/forms.py:11 income/forms.py:16 income/models.py:25
+#: income/forms.py:11 income/forms.py:17 income/models.py:19
 msgid "Summasi"
 msgstr "Amount"
 
@@ -42,15 +42,15 @@ msgstr "Dollar"
 msgid "Foydalanuvchi"
 msgstr "User"
 
-#: expenses/models.py:20 income/models.py:20
+#: expenses/models.py:20 income/models.py:18
 msgid "Nom"
 msgstr "Title"
 
-#: expenses/models.py:30 income/forms.py:17 income/models.py:30
+#: expenses/models.py:30 income/forms.py:18 income/models.py:20
 msgid "To‘lov usuli"
 msgstr "Payment Method"
 
-#: expenses/models.py:34 income/models.py:34
+#: expenses/models.py:34
 msgid "Yaratilgan sana"
 msgstr "Created At"
 
@@ -78,14 +78,18 @@ msgstr "Expense updated!"
 msgid "Chiqim o‘chirildi!"
 msgstr "Expense deleted!"
 
-#: income/views.py:36
+#: income/forms.py:19 income/models.py:23
+msgid "Sana"
+msgstr ""
+
+#: income/views.py:41
 msgid "Kirim qo‘shildi"
 msgstr "Income added"
 
-#: income/views.py:57
+#: income/views.py:62
 msgid "Kirim yangilandi"
 msgstr "Income updated"
 
-#: income/views.py:69
+#: income/views.py:74
 msgid "Kirim o‘chirildi"
 msgstr "Income deleted"

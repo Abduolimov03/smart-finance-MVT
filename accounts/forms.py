@@ -24,6 +24,9 @@ class SignUpForm(forms.ModelForm):
         email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
         phone_regex = r'^\+?[0-9]{9,15}$'
 
+        if not user_input:
+            raise forms.ValidationError(_("Email yoki telefon raqam kiriting"))
+
         if re.match(email_regex, user_input):
             if CustomUser.objects.filter(email=user_input).exists():
                 raise forms.ValidationError(_("Bu email allaqachon mavjud"))
