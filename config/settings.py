@@ -45,16 +45,29 @@ INSTALLED_APPS = [
 
 ]
 
+LANGUAGE_CODE = 'uz'
+
+LANGUAGES = [
+    ('uz', "O'zbek"),
+    ('ru', 'Русский'),
+    ('en', 'English'),
+]
+
+LOCALE_PATHS = [BASE_DIR / 'locale']
+
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "django.middleware.locale.LocaleMiddleware",  # LocaleMiddleware CommonMiddleware dan keyin va CsrfViewMiddleware dan oldin bo‘lishi kerak
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'django.middleware.csrf.CsrfViewMiddleware',
-
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -70,6 +83,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                'django.template.context_processors.i18n',
+
             ],
         },
     },
@@ -111,13 +126,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "Asia/Tashkent"
 
-USE_I18N = True
 
-USE_TZ = True
 
 
 
@@ -152,3 +164,5 @@ EMAIL_HOST_PASSWORD = "yvzm bhhr htmq uven"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+

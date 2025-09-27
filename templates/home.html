@@ -1,4 +1,6 @@
 {% load humanize %}
+{% load i18n %}
+
 <!DOCTYPE html>
 <html lang="uz">
 <head>
@@ -56,7 +58,20 @@ button.submit-btn:hover { background-color:#16295c;}
     <div class="account-actions">
         <a href="{% url 'change_profile' %}" class="btn-edit">Profilni o'zgartirish</a>
         <a href="{% url 'logout' %}" class="btn-logout">Chiqish</a>
+
     </div>
+<form action="{% url 'set_language' %}" method="post">
+    {% csrf_token %}
+    <select name="language">
+        {% get_current_language as LANGUAGE_CODE %}
+        {% get_available_languages as LANGUAGES %}
+        {% for code, name in LANGUAGES %}
+            <option value="{{ code }}" {% if code == LANGUAGE_CODE %}selected{% endif %}>{{ name }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Tilni o‘zgartirish">
+</form>
+
 </header>
 
 <nav>

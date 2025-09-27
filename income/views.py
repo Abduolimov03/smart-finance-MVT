@@ -4,6 +4,7 @@ from django.contrib import messages
 from .forms import IncomeForm
 from .models import Income
 from django.db.models import F
+from django.utils.translation import gettext_lazy as _
 
 @login_required
 def income_add(request):
@@ -13,6 +14,11 @@ def income_add(request):
             title = form.cleaned_data['title']
             amount = form.cleaned_data['amount']
             payment_method = form.cleaned_data['payment_method']
+
+            if payment_method == "dollar":
+                amount = amount * 12700
+                payment_method = "naqt"
+
             incomes = Income.objects.filter(
                 user=request.user,
                 title=title,
@@ -20,11 +26,9 @@ def income_add(request):
             )
 
             if incomes.exists():
-
                 income_obj = incomes.first()
                 income_obj.amount = F('amount') + amount
                 income_obj.save()
-
                 incomes.exclude(id=income_obj.id).delete()
             else:
                 Income.objects.create(
@@ -34,7 +38,7 @@ def income_add(request):
                     amount=amount
                 )
 
-            messages.success(request, "Kirim qo‘shildi")
+            messages.success(request, _("Kirim qo‘shildi"))
             return redirect('home')
     else:
         form = IncomeForm()
@@ -55,7 +59,7 @@ def income_update(request, pk):
         form = IncomeForm(request.POST, instance=income)
         if form.is_valid():
             form.save()
-            messages.success(request, "Kirim yangilandi")
+            messages.success(request, _("Kirim yangilandi"))
             return redirect('income_list')
     else:
         form = IncomeForm(instance=income)
@@ -67,6 +71,6 @@ def income_delete(request, pk):
     income = get_object_or_404(Income, pk=pk, user=request.user)
     if request.method == 'POST':
         income.delete()
-        messages.success(request, "Kirim o‘chirildi")
+        messages.success(request, _("Kirim o‘chirildi"))
         return redirect('income_list')
     return render(request, 'income_delete.html', {'income': income})

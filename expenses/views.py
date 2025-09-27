@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Sum, F
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from datetime import datetime, timedelta
 from django.db.models.functions import TruncDay, TruncMonth, TruncYear, TruncWeek
 import json
@@ -26,7 +27,7 @@ def expense_home(request):
             payment_method = form.cleaned_data["payment_method"]
 
             if amount > balance:
-                messages.error(request, f"Hisobingizda mablag‘ yetarli emas! (Balans: {balance:,} so‘m)")
+                messages.error(request, _("Hisobingizda mablag‘ yetarli emas! (Balans: {balance:,} so‘m)").format(balance=balance))
                 return redirect("expense_home")
 
             expense_obj, created = Expense.objects.get_or_create(
@@ -40,10 +41,10 @@ def expense_home(request):
                 expense_obj.save(update_fields=["amount"])
                 expense_obj.refresh_from_db()
 
-            messages.success(request, "Chiqim qo‘shildi!")
+            messages.success(request, _("Chiqim qo‘shildi!"))
             return redirect("expense_home")
         else:
-            messages.error(request, " Iltimos, barcha maydonlarni to‘ldiring!")
+            messages.error(request, _("Iltimos, barcha maydonlarni to‘ldiring!"))
 
     expenses = Expense.objects.filter(user=request.user).order_by("-created_at")
     today = timezone.now().date()
@@ -69,7 +70,7 @@ def expense_home(request):
             )
             range_total = range_expenses.aggregate(total=Sum("amount"))["total"] or 0
         except ValueError:
-            messages.error(request, "Sana formati noto‘g‘ri!")
+            messages.error(request, _("Sana formati noto‘g‘ri!"))
 
     chart_data = expenses.annotate(day=TruncDay("created_at"))\
                          .values("day")\
@@ -116,9 +117,11 @@ def expense_add(request):
             amount=amount,
             payment_method=payment_method
         )
+        messages.success(request, _("Chiqim qo‘shildi!"))
         return redirect('expense_home')
 
     return render(request, "add.html")
+
 
 @login_required
 def expense_update(request, pk):
@@ -126,14 +129,14 @@ def expense_update(request, pk):
     form = ExpenseForm(request.POST or None, instance=expense)
     if form.is_valid():
         form.save()
-        messages.success(request, "Chiqim yangilandi!")
+        messages.success(request, _("Chiqim yangilandi!"))
         return redirect("expense_home")
     return render(request, "expense_update.html", {"form": form})
+
 
 @login_required
 def expense_delete(request, pk):
     expense = get_object_or_404(Expense, pk=pk, user=request.user)
     expense.delete()
-    messages.success(request, "Chiqim o‘chirildi!")
+    messages.success(request, _("Chiqim o‘chirildi!"))
     return redirect("expense_home")
-

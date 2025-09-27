@@ -1,18 +1,46 @@
 from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+
 
 class Income(models.Model):
     PAYMENT_METHODS = [
-        ('naqt', 'Naqt'),
-        ('karta', 'Karta'),
-        ('dollar', 'Dollar'),
+        ('naqt', _('Naqt')),
+        ('karta', _('Karta')),
+        ('dollar', _('Dollar')),
     ]
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    amount = models.DecimalField(max_digits=12, decimal_places=2)
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS)
-    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name=_("Foydalanuvchi")
+    )
+    title = models.CharField(
+        max_length=255,
+        verbose_name=_("Nom")
+    )
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        verbose_name=_("Summasi")
+    )
+    payment_method = models.CharField(
+        max_length=20,
+        choices=PAYMENT_METHODS,
+        verbose_name=_("To‘lov usuli")
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("Yaratilgan sana")
+    )
+
+    USD_RATE = 12700
+
+    def save(self, *args, **kwargs):
+        if self.payment_method == "dollar":
+            self.amount = self.amount * self.USD_RATE
+            self.payment_method = "naqt"
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.title} - {self.amount} {self.payment_method}"
+        return f"{self.title} - {self.amount} so'm"

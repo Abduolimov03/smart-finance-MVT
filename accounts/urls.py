@@ -2,6 +2,8 @@ from django.urls import path
 from .views import signup_view, verify_view, login_view, home_view, forgot_password_view, reset_password_view, \
     logout_view, change_profile
 
+from django.views.i18n import set_language  # <-- bu qo'shildi
+
 urlpatterns = [
     path("", signup_view, name="signup"),
     path("verify/", verify_view, name="verify"),
@@ -11,5 +13,6 @@ urlpatterns = [
     path("reset-password/", reset_password_view, name="reset_password"),
     path("logout/", logout_view, name="logout"),
     path("profile/", change_profile, name="change_profile"),
+    path('set-language/', set_language, name='set_language'),
 
 ]
