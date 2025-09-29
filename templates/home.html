@@ -84,7 +84,7 @@ button.submit-btn:hover { background-color:#16295c;}
     <section id="kirim" class="tab-content active">
         <div class="card">
             <h2>Vaqt oralig‘i bo‘yicha filtr</h2>
-            <form method="get" action="{% url 'home' %}">
+            <form method="get" action="{% url 'income_list' %}">
                 <div class="date-filter">
                     <label for="start_date">Boshlanish sanasi:</label>
                     <input type="date" id="start_date" name="start_date" value="{{ start_date|default:'' }}">
