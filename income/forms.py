@@ -5,7 +5,7 @@ from .models import Income
 class IncomeForm(forms.ModelForm):
     class Meta:
         model = Income
-        fields = ['title', 'amount', 'payment_method', 'created_at']
+        fields = ['title', 'amount', 'payment_method']
         widgets = {
             'title': forms.TextInput(attrs={'placeholder': _('Nomi yoki manbai')}),
             'amount': forms.NumberInput(attrs={'placeholder': _('Summasi')}),
