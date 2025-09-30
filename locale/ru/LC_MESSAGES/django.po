@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-27 19:04+0500\n"
+"POT-Creation-Date: 2025-09-30 13:08+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -86,18 +86,18 @@ msgstr ""
 msgid "Chiqim o‘chirildi!"
 msgstr ""
 
-#: income/forms.py:19 income/models.py:23
+#: income/forms.py:19 income/models.py:24
 msgid "Sana"
 msgstr ""
 
-#: income/views.py:41
+#: income/views.py:42
 msgid "Kirim qo‘shildi"
 msgstr ""
 
-#: income/views.py:62
+#: income/views.py:89
 msgid "Kirim yangilandi"
 msgstr ""
 
-#: income/views.py:74
+#: income/views.py:101
 msgid "Kirim o‘chirildi"
 msgstr ""

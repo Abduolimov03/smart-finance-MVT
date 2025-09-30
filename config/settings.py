@@ -45,7 +45,7 @@ INSTALLED_APPS = [
 
 ]
 
-LANGUAGE_CODE = 'uz'
+LANGUAGE_CODE = 'en'
 
 LANGUAGES = [
     ('uz', "O'zbek"),
