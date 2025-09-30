@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-27 19:04+0500\n"
+"POT-Creation-Date: 2025-10-01 02:14+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
 #: accounts/forms.py:7
 msgid "Email yoki Telefon raqam"
 msgstr ""
@@ -33,23 +34,27 @@ msgstr ""
 msgid "Parollar bir xil emas!"
 msgstr ""
 
-#: accounts/forms.py:29
+#: accounts/forms.py:28
+msgid "Email yoki telefon raqam kiriting"
+msgstr ""
+
+#: accounts/forms.py:32
 msgid "Bu email allaqachon mavjud"
 msgstr ""
 
-#: accounts/forms.py:35
+#: accounts/forms.py:38
 msgid "Bu telefon raqam allaqachon mavjud"
 msgstr ""
 
-#: accounts/forms.py:40
+#: accounts/forms.py:43
 msgid "Faqat email yoki telefon raqam kiriting"
 msgstr ""
 
-#: accounts/forms.py:53
+#: accounts/forms.py:56
 msgid "Bu email allaqachon ro‘yxatdan o‘tgan"
 msgstr ""
 
-#: accounts/forms.py:59
+#: accounts/forms.py:62
 msgid "Bu telefon raqam allaqachon ro‘yxatdan o‘tgan"
 msgstr ""
 

@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: kirim-chiqim-mvt 1.0\n"
+"Project-Id-Version: smart-finance-MVT 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-30 13:08+0500\n"
-"PO-Revision-Date: 2025-09-21 12:50+0500\n"
-"Last-Translator: Asadbek <your_email@example.com>\n"
-"Language-Team: English <en@li.org>\n"
+"POT-Creation-Date: 2025-10-01 02:31+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: English <LL@li.org>\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13,12 +13,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: expenses/forms.py:10 expenses/forms.py:15 income/forms.py:10
-#: income/forms.py:16
+#: income/forms.py:16 templates/home.html:137
 msgid "Nomi yoki manbai"
-msgstr "Title or Source"
+msgstr "Name or Source"
 
 #: expenses/forms.py:11 expenses/forms.py:16 expenses/models.py:25
 #: income/forms.py:11 income/forms.py:17 income/models.py:19
+#: templates/home.html:138
 msgid "Summasi"
 msgstr "Amount"
 
@@ -26,15 +27,15 @@ msgstr "Amount"
 msgid "To‘lov turi"
 msgstr "Payment Type"
 
-#: expenses/models.py:8 income/models.py:8
+#: expenses/models.py:8 income/models.py:8 templates/home.html:140
 msgid "Naqt"
 msgstr "Cash"
 
-#: expenses/models.py:9 income/models.py:9
+#: expenses/models.py:9 income/models.py:9 templates/home.html:141
 msgid "Karta"
 msgstr "Card"
 
-#: expenses/models.py:10 income/models.py:10
+#: expenses/models.py:10 income/models.py:10 templates/home.html:142
 msgid "Dollar"
 msgstr "Dollar"
 
@@ -44,7 +45,7 @@ msgstr "User"
 
 #: expenses/models.py:20 income/models.py:18
 msgid "Nom"
-msgstr "Title"
+msgstr "Name"
 
 #: expenses/models.py:30 income/forms.py:18 income/models.py:20
 msgid "To‘lov usuli"
@@ -52,11 +53,11 @@ msgstr "Payment Method"
 
 #: expenses/models.py:34
 msgid "Yaratilgan sana"
-msgstr "Created At"
+msgstr "Created Date"
 
 #: expenses/views.py:30
 msgid "Hisobingizda mablag‘ yetarli emas! (Balans: {balance:,} so‘m)"
-msgstr "Insufficient funds in your account! (Balance: {balance:,})"
+msgstr "Insufficient balance! (Balance: {balance:,} UZS)"
 
 #: expenses/views.py:44 expenses/views.py:120
 msgid "Chiqim qo‘shildi!"
@@ -78,9 +79,9 @@ msgstr "Expense updated!"
 msgid "Chiqim o‘chirildi!"
 msgstr "Expense deleted!"
 
-#: income/forms.py:19 income/models.py:24
+#: income/forms.py:19 income/models.py:24 templates/home.html:223
 msgid "Sana"
-msgstr ""
+msgstr "Date"
 
 #: income/views.py:42
 msgid "Kirim qo‘shildi"
@@ -93,3 +94,150 @@ msgstr "Income updated"
 #: income/views.py:101
 msgid "Kirim o‘chirildi"
 msgstr "Income deleted"
+
+#: templates/home.html:9
+msgid "Bosh sahifa"
+msgstr ""
+
+#: templates/home.html:56
+#, python-format
+msgid "Xush kelibsiz, %(request.user.username)s!"
+msgstr ""
+
+#: templates/home.html:57 templates/home.html:99 templates/home.html:106
+#: templates/home.html:110 templates/home.html:114 templates/home.html:118
+#: templates/home.html:155
+msgid "so‘m"
+msgstr ""
+
+#: templates/home.html:58
+msgid "Umumiy balans"
+msgstr ""
+
+#: templates/home.html:60 templates/home.html:177
+msgid "Profilni o'zgartirish"
+msgstr ""
+
+#: templates/home.html:61 templates/home.html:178
+msgid "Chiqish"
+msgstr ""
+
+#: templates/home.html:80
+msgid "Kirimlar"
+msgstr ""
+
+#: templates/home.html:81
+msgid "Chiqimlar"
+msgstr ""
+
+#: templates/home.html:82
+msgid "Profil"
+msgstr ""
+
+#: templates/home.html:88
+msgid "Vaqt oralig‘i bo‘yicha filtr"
+msgstr ""
+
+#: templates/home.html:91
+msgid "Boshlanish sanasi:"
+msgstr ""
+
+#: templates/home.html:93
+msgid "Tugash sanasi:"
+msgstr ""
+
+#: templates/home.html:95
+msgid "Filtr"
+msgstr ""
+
+#: templates/home.html:99
+msgid "Tanlangan davr kirimi:"
+msgstr ""
+
+#: templates/home.html:105
+msgid "Bugungi kirim"
+msgstr ""
+
+#: templates/home.html:109 templates/home.html:201
+msgid "Haftalik kirim"
+msgstr ""
+
+#: templates/home.html:113 templates/home.html:201
+msgid "Oylik kirim"
+msgstr ""
+
+#: templates/home.html:117 templates/home.html:201
+msgid "Yillik kirim"
+msgstr ""
+
+#: templates/home.html:123
+msgid "Kirimlar grafigi"
+msgstr ""
+
+#: templates/home.html:125
+msgid "Kunlik"
+msgstr ""
+
+#: templates/home.html:126
+msgid "Haftalik"
+msgstr ""
+
+#: templates/home.html:127
+msgid "Oylik"
+msgstr ""
+
+#: templates/home.html:128
+msgid "Yillik"
+msgstr ""
+
+#: templates/home.html:134
+#, fuzzy
+#| msgid "Kirim qo‘shildi"
+msgid "Yangi kirim qo‘shish"
+msgstr "Income added"
+
+#: templates/home.html:144
+msgid "Qo‘shish"
+msgstr ""
+
+#: templates/home.html:149
+#, fuzzy
+#| msgid "Kirim qo‘shildi"
+msgid "Kirimlar ro‘yxati"
+msgstr "Income added"
+
+#: templates/home.html:159
+msgid "Tahrirlash"
+msgstr ""
+
+#: templates/home.html:160
+msgid "O‘chirish"
+msgstr ""
+
+#: templates/home.html:164
+msgid "Hozircha kirimlar yo‘q"
+msgstr ""
+
+#: templates/home.html:172
+msgid "Profil ma’lumotlari"
+msgstr ""
+
+#: templates/home.html:173
+msgid "Email:"
+msgstr ""
+
+#: templates/home.html:174
+msgid "Telefon:"
+msgstr ""
+
+#: templates/home.html:175
+msgid "Username:"
+msgstr ""
+
+#: templates/home.html:201
+msgid "Kunlik kirim"
+msgstr ""
+
+#: templates/home.html:224
+msgid "Summa (so‘m)"
+msgstr ""

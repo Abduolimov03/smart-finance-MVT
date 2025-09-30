@@ -1,103 +1,243 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: smart-finance-MVT 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-30 13:08+0500\n"
+"POT-Creation-Date: 2025-10-01 02:31+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language-Team: Russian <LL@li.org>\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
-"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: expenses/forms.py:10 expenses/forms.py:15 income/forms.py:10
-#: income/forms.py:16
+#: income/forms.py:16 templates/home.html:137
 msgid "Nomi yoki manbai"
-msgstr ""
+msgstr "Название или источник"
 
 #: expenses/forms.py:11 expenses/forms.py:16 expenses/models.py:25
 #: income/forms.py:11 income/forms.py:17 income/models.py:19
+#: templates/home.html:138
 msgid "Summasi"
-msgstr ""
+msgstr "Сумма"
 
 #: expenses/forms.py:17
 msgid "To‘lov turi"
-msgstr ""
+msgstr "Тип платежа"
 
-#: expenses/models.py:8 income/models.py:8
+#: expenses/models.py:8 income/models.py:8 templates/home.html:140
 msgid "Naqt"
-msgstr ""
+msgstr "Наличные"
 
-#: expenses/models.py:9 income/models.py:9
+#: expenses/models.py:9 income/models.py:9 templates/home.html:141
 msgid "Karta"
-msgstr ""
+msgstr "Карта"
 
-#: expenses/models.py:10 income/models.py:10
+#: expenses/models.py:10 income/models.py:10 templates/home.html:142
 msgid "Dollar"
-msgstr ""
+msgstr "Доллар"
 
 #: expenses/models.py:16 income/models.py:16
 msgid "Foydalanuvchi"
-msgstr ""
+msgstr "Пользователь"
 
 #: expenses/models.py:20 income/models.py:18
 msgid "Nom"
-msgstr ""
+msgstr "Название"
 
 #: expenses/models.py:30 income/forms.py:18 income/models.py:20
 msgid "To‘lov usuli"
-msgstr ""
+msgstr "Способ оплаты"
 
 #: expenses/models.py:34
 msgid "Yaratilgan sana"
-msgstr ""
+msgstr "Дата создания"
 
 #: expenses/views.py:30
 msgid "Hisobingizda mablag‘ yetarli emas! (Balans: {balance:,} so‘m)"
-msgstr ""
+msgstr "Недостаточно средств! (Баланс: {balance:,} UZS)"
 
 #: expenses/views.py:44 expenses/views.py:120
 msgid "Chiqim qo‘shildi!"
-msgstr ""
+msgstr "Расход добавлен!"
 
 #: expenses/views.py:47
 msgid "Iltimos, barcha maydonlarni to‘ldiring!"
-msgstr ""
+msgstr "Пожалуйста, заполните все поля!"
 
 #: expenses/views.py:73
 msgid "Sana formati noto‘g‘ri!"
-msgstr ""
+msgstr "Неверный формат даты!"
 
 #: expenses/views.py:132
 msgid "Chiqim yangilandi!"
-msgstr ""
+msgstr "Расход обновлен!"
 
 #: expenses/views.py:141
 msgid "Chiqim o‘chirildi!"
-msgstr ""
+msgstr "Расход удален!"
 
-#: income/forms.py:19 income/models.py:24
+#: income/forms.py:19 income/models.py:24 templates/home.html:223
 msgid "Sana"
-msgstr ""
+msgstr "Дата"
 
 #: income/views.py:42
 msgid "Kirim qo‘shildi"
-msgstr ""
+msgstr "Доход добавлен"
 
 #: income/views.py:89
 msgid "Kirim yangilandi"
-msgstr ""
+msgstr "Доход обновлен"
 
 #: income/views.py:101
 msgid "Kirim o‘chirildi"
+msgstr "Доход удален"
+
+#: templates/home.html:9
+msgid "Bosh sahifa"
+msgstr ""
+
+#: templates/home.html:56
+#, python-format
+msgid "Xush kelibsiz, %(request.user.username)s!"
+msgstr ""
+
+#: templates/home.html:57 templates/home.html:99 templates/home.html:106
+#: templates/home.html:110 templates/home.html:114 templates/home.html:118
+#: templates/home.html:155
+msgid "so‘m"
+msgstr ""
+
+#: templates/home.html:58
+msgid "Umumiy balans"
+msgstr ""
+
+#: templates/home.html:60 templates/home.html:177
+msgid "Profilni o'zgartirish"
+msgstr ""
+
+#: templates/home.html:61 templates/home.html:178
+msgid "Chiqish"
+msgstr ""
+
+#: templates/home.html:80
+msgid "Kirimlar"
+msgstr ""
+
+#: templates/home.html:81
+msgid "Chiqimlar"
+msgstr ""
+
+#: templates/home.html:82
+msgid "Profil"
+msgstr ""
+
+#: templates/home.html:88
+msgid "Vaqt oralig‘i bo‘yicha filtr"
+msgstr ""
+
+#: templates/home.html:91
+msgid "Boshlanish sanasi:"
+msgstr ""
+
+#: templates/home.html:93
+msgid "Tugash sanasi:"
+msgstr ""
+
+#: templates/home.html:95
+msgid "Filtr"
+msgstr ""
+
+#: templates/home.html:99
+msgid "Tanlangan davr kirimi:"
+msgstr ""
+
+#: templates/home.html:105
+msgid "Bugungi kirim"
+msgstr ""
+
+#: templates/home.html:109 templates/home.html:201
+msgid "Haftalik kirim"
+msgstr ""
+
+#: templates/home.html:113 templates/home.html:201
+msgid "Oylik kirim"
+msgstr ""
+
+#: templates/home.html:117 templates/home.html:201
+msgid "Yillik kirim"
+msgstr ""
+
+#: templates/home.html:123
+msgid "Kirimlar grafigi"
+msgstr ""
+
+#: templates/home.html:125
+msgid "Kunlik"
+msgstr ""
+
+#: templates/home.html:126
+msgid "Haftalik"
+msgstr ""
+
+#: templates/home.html:127
+msgid "Oylik"
+msgstr ""
+
+#: templates/home.html:128
+msgid "Yillik"
+msgstr ""
+
+#: templates/home.html:134
+#, fuzzy
+#| msgid "Kirim qo‘shildi"
+msgid "Yangi kirim qo‘shish"
+msgstr "Доход добавлен"
+
+#: templates/home.html:144
+msgid "Qo‘shish"
+msgstr ""
+
+#: templates/home.html:149
+#, fuzzy
+#| msgid "Kirim qo‘shildi"
+msgid "Kirimlar ro‘yxati"
+msgstr "Доход добавлен"
+
+#: templates/home.html:159
+msgid "Tahrirlash"
+msgstr ""
+
+#: templates/home.html:160
+msgid "O‘chirish"
+msgstr ""
+
+#: templates/home.html:164
+msgid "Hozircha kirimlar yo‘q"
+msgstr ""
+
+#: templates/home.html:172
+msgid "Profil ma’lumotlari"
+msgstr ""
+
+#: templates/home.html:173
+msgid "Email:"
+msgstr ""
+
+#: templates/home.html:174
+msgid "Telefon:"
+msgstr ""
+
+#: templates/home.html:175
+msgid "Username:"
+msgstr ""
+
+#: templates/home.html:201
+msgid "Kunlik kirim"
+msgstr ""
+
+#: templates/home.html:224
+msgid "Summa (so‘m)"
 msgstr ""
