@@ -42,8 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'expenses',
 
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+
 
 ]
+SITE_ID = 1
 
 LANGUAGE_CODE = 'en'
 
@@ -60,15 +66,19 @@ USE_L10N = True
 USE_TZ = True
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.locale.LocaleMiddleware",  # LocaleMiddleware CommonMiddleware dan keyin va CsrfViewMiddleware dan oldin bo‘lishi kerak
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+ 'django.middleware.security.SecurityMiddleware',
+ 'django.contrib.sessions.middleware.SessionMiddleware',
+ 'django.middleware.locale.LocaleMiddleware',
+ 'django.middleware.common.CommonMiddleware',
+ 'django.middleware.csrf.CsrfViewMiddleware',
+ 'django.contrib.auth.middleware.AuthenticationMiddleware',
+ 'django.contrib.messages.middleware.MessageMiddleware',
+ 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+ 'corsheaders.middleware.CorsMiddleware',
+
+ "allauth.account.middleware.AccountMiddleware",
 ]
+
 
 ROOT_URLCONF = "config.urls"
 
@@ -122,7 +132,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
