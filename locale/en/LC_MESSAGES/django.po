@@ -1,20 +1,100 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: smart-finance-MVT 1.0\n"
-"Language: uz\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-22 13:24+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: expenses/forms.py:10 expenses/forms.py:15 income/forms.py:10
+#: income/forms.py:16
+msgid "Nomi yoki manbai"
+msgstr ""
 
-#: templates/home.html:9
-msgid "Home"
-msgstr "Bosh sahifa"
+#: expenses/forms.py:11 expenses/forms.py:16 expenses/models.py:25
+#: income/forms.py:11 income/forms.py:17 income/models.py:19
+msgid "Summasi"
+msgstr ""
 
-#: templates/home.html:60
-msgid "Edit profile"
-msgstr "Profilni o‘zgartirish"
+#: expenses/forms.py:17
+msgid "To‘lov turi"
+msgstr ""
 
-#: templates/home.html:61
-msgid "Logout"
-msgstr "Chiqish"
+#: expenses/models.py:8 income/models.py:8
+msgid "Naqt"
+msgstr ""
+
+#: expenses/models.py:9 income/models.py:9
+msgid "Karta"
+msgstr ""
+
+#: expenses/models.py:10 income/models.py:10
+msgid "Dollar"
+msgstr ""
+
+#: expenses/models.py:16 income/models.py:16
+msgid "Foydalanuvchi"
+msgstr ""
+
+#: expenses/models.py:20 income/models.py:18
+msgid "Nom"
+msgstr ""
+
+#: expenses/models.py:30 income/forms.py:18 income/models.py:20
+msgid "To‘lov usuli"
+msgstr ""
+
+#: expenses/models.py:34
+msgid "Yaratilgan sana"
+msgstr ""
+
+#: expenses/views.py:30
+msgid "Hisobingizda mablag‘ yetarli emas! (Balans: {balance:,} so‘m)"
+msgstr ""
+
+#: expenses/views.py:44 expenses/views.py:120
+msgid "Chiqim qo‘shildi!"
+msgstr ""
+
+#: expenses/views.py:47
+msgid "Iltimos, barcha maydonlarni to‘ldiring!"
+msgstr ""
+
+#: expenses/views.py:73
+msgid "Sana formati noto‘g‘ri!"
+msgstr ""
+
+#: expenses/views.py:132
+msgid "Chiqim yangilandi!"
+msgstr ""
+
+#: expenses/views.py:141
+msgid "Chiqim o‘chirildi!"
+msgstr ""
+
+#: income/forms.py:19 income/models.py:24
+msgid "Sana"
+msgstr ""
+
+#: income/views.py:42
+msgid "Kirim qo‘shildi"
+msgstr ""
+
+#: income/views.py:89
+msgid "Kirim yangilandi"
+msgstr ""
+
+#: income/views.py:101
+msgid "Kirim o‘chirildi"
+msgstr ""
