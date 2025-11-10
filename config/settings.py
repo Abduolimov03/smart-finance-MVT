@@ -29,9 +29,21 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+
+    'modeltranslation',
+
 ]
 
 SITE_ID = 1
+
+
+LANGUAGES = (
+    ('uz', 'Uzbek'),
+    ('ru', 'Russian'),
+    ('en', 'English'),
+)
+
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'uz'
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
